@@ -113,7 +113,7 @@
 }
 
 + (FCIPAddressGeocoder*) sharedGeocoder {
-    return [FCIPAddressGeocoder sharedGeocoderWithURL:[NSURL URLWithString:kDefaultGeoIPURL]];
+    return [FCIPAddressGeocoder sharedGeocoderWithURL:nil];
 }
 
 + (FCIPAddressGeocoder*) sharedGeocoderWithURL:(NSURL*)url {
@@ -121,12 +121,18 @@
     static dispatch_once_t token;
 	
     dispatch_once(&token, ^{
-        instance = [[self alloc] initWithURL:url];
+		if(!url) {
+			instance = [[self alloc] initWithURL:kDefaultGeoIPURL]; 
+		} else {
+			instance = [[self alloc] initWithURL:url]; 
+		}
     });
    	
 	//Make sure caller isn't trying to reinitialize us with a new URL
-	NSAssert([[instance.url absoluteString] isEqualToString:[url absoluteString]],
-			 @"Cannot reinitialize shared geocoder with a different URL than used at first initialization.");
+	if(url) {
+		NSAssert([[instance.url absoluteString] isEqualToString:[url absoluteString]],
+				 @"Cannot reinitialize shared geocoder with a different URL than used at first initialization.");
+	}
 	
     return instance;
 }
