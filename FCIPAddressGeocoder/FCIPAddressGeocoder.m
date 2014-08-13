@@ -122,7 +122,7 @@
 	
     dispatch_once(&token, ^{
 		if(!url) {
-			instance = [[self alloc] initWithURL:kDefaultGeoIPURL]; 
+			instance = [[self alloc] initWithURL:[NSURL URLWithString:kDefaultGeoIPURL]];
 		} else {
 			instance = [[self alloc] initWithURL:url]; 
 		}
